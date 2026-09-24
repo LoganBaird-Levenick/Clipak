@@ -1,0 +1,17 @@
+[package]
+name = "clipak-runtime"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+clipak-core = { path = "../clipak-core" }
+anyhow.workspace = true
+thiserror.workspace = true
+nix.workspace = true
+tracing.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tempfile.workspace = true
+sha2.workspace = true
