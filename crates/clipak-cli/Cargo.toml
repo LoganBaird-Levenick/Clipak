@@ -1,0 +1,29 @@
+[package]
+name = "clipak"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "clipak"
+path = "src/main.rs"
+
+[dependencies]
+clipak-core = { path = "../clipak-core" }
+clipak-runtime = { path = "../clipak-runtime" }
+clipak-builder = { path = "../clipak-builder" }
+clipak-daemon = { path = "../clipak-daemon" }
+clap.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+walkdir.workspace = true
+tempfile.workspace = true
+nix.workspace = true
+sha2.workspace = true
+hex.workspace = true
