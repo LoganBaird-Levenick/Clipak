@@ -1,3 +1,9 @@
+//! Host environment integration and PATH shim generation.
+//!
+//! Generates fast launcher scripts in `~/.local/share/clipak/bin` (or `/var/lib/clipak/bin`)
+//! so users can invoke tools transparently (e.g. `gdb`, `bpftrace`, `strace`) without
+//! having to manually prefix `clipak run`.
+
 use anyhow::{Context, Result};
 use clipak_core::constants::*;
 use clipak_runtime::{InstalledTool, ToolRegistry};
@@ -10,7 +16,7 @@ pub enum ShimMode {
     ShellScript,
 }
 
-/// Manages registration of exported binaries into host PATH
+/// Manages registration of exported binaries into host PATH.
 pub struct ShimManager {
     bin_dir: PathBuf,
     mode: ShimMode,
@@ -58,12 +64,12 @@ impl ShimManager {
                     let script = format!(
                         r#"#!/bin/sh
 # Auto-generated Clipak execution shim for {}
-exec {} run "{}" "{}" "$@"
+exec {} run --command "{}" "{}" "$@"
 "#,
                         export.name,
                         clipak_binary_path.display(),
-                        tool.id,
-                        export.name
+                        export.name,
+                        tool.id
                     );
                     fs::write(&shim_path, script)?;
                     let mut perms = fs::metadata(&shim_path)?.permissions();
