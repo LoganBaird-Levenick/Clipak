@@ -1,9 +1,12 @@
 [package]
 name = "clipak-core"
+description = "Core specifications, GPT disk partitioning, dm-verity verification, CAS engine, and SBOM tools for Clipak"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 [dependencies]
 serde.workspace = true

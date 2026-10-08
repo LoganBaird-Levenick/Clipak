@@ -1,9 +1,12 @@
 [package]
 name = "clipak-daemon"
+description = "Package installation engine, system/user environment management, and host PATH shim manager for Clipak"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 [dependencies]
 clipak-core = { path = "../clipak-core" }

@@ -1,9 +1,12 @@
 [package]
 name = "clipak-builder"
+description = "Deterministic build pipeline, shared library bundler, and UAPI DDI disk image packager for Clipak"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 [dependencies]
 clipak-core = { path = "../clipak-core" }

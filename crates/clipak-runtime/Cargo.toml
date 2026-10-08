@@ -1,9 +1,12 @@
 [package]
 name = "clipak-runtime"
+description = "Mount namespace management, bubblewrap runner, and DDI payload extraction for Clipak"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 [dependencies]
 clipak-core = { path = "../clipak-core" }
