@@ -1,3 +1,9 @@
+//! Cryptographic primitives for DDI image signing and verification.
+//!
+//! Conforms to systemd Discoverable Disk Image signature partitions:
+//! the root hash of the dm-verity tree is signed via PKCS#7 SignedData
+//! structure (RFC 2315) and stored directly in the `root-verity-sig` partition.
+
 use anyhow::{bail, Result};
 use openssl::asn1::Asn1Time;
 use openssl::bn::{BigNum, MsbOption};
@@ -11,7 +17,7 @@ use openssl::x509::{X509NameBuilder, X509};
 use std::fs;
 use std::path::Path;
 
-/// Keypair and certificate bundle for Clipak package signing
+/// RSA private key and X.509 certificate pair used to sign DDI root hashes.
 pub struct SigningIdentity {
     pub pkey: PKey<Private>,
     pub cert: X509,

@@ -1,3 +1,9 @@
+//! Native Linux mount namespacing via `unshare(2)`.
+//!
+//! Provides a direct fallback when Bubblewrap is not installed. Unshares
+//! only `CLONE_NEWNS` (and `CLONE_NEWUSER` for unprivileged users), makes
+//! mounts private, and bind mounts the tool rootfs at `/app`.
+
 use anyhow::{Context, Result};
 use nix::mount::{mount, MsFlags};
 use nix::sched::{unshare, CloneFlags};

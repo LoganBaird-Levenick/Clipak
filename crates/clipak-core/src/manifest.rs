@@ -1,7 +1,16 @@
+//! Package manifest specification for Clipak tools.
+//!
+//! Tools are declared via `clipak.yaml` or `manifest.json`. The manifest defines:
+//! - Identity and metadata (reverse-DNS ID, name, version, summary)
+//! - Binaries exported to host PATH shims
+//! - Base runtime dependency (defaulting to `org.clipak.Runtime//1.0`)
+//! - Curation policy (justification for unconfined host access)
+//! - Optional reproducible build recipes
+
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-/// Metadata declaring unconfined justification for repository curation.
+/// Metadata declaring unconfined host access requirements for repository curation.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CurationPolicy {
     /// Why this tool cannot function inside a standard Flatpak sandbox

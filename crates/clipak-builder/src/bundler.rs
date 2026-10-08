@@ -1,3 +1,9 @@
+//! Shared library dependency analysis and encapsulation.
+//!
+//! Inspects built executables with `ldd` and copies any shared libraries that
+//! are not part of the standard glibc runtime baseline into `/app/lib`. This
+//! ensures packages run reliably across different host distribution versions.
+
 use anyhow::{Context, Result};
 use std::collections::HashSet;
 use std::fs;

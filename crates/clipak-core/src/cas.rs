@@ -1,10 +1,15 @@
+//! Content-Addressable Storage (CAS) for build artifacts and cached layers.
+//!
+//! Stores objects keyed by their SHA-256 digest under `<base_dir>/objects/xx/yy...`.
+//! Writes are staged in a temporary directory and atomically renamed to prevent partial writes.
+
 use anyhow::{bail, Result};
 use sha2::{Digest, Sha256};
 use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
-/// Content-Addressable Storage (CAS) engine for build reproducibility and artifact caching
+/// Content-Addressable Storage store for deduplicated build artifacts.
 #[derive(Debug, Clone)]
 pub struct CasStore {
     base_dir: PathBuf,

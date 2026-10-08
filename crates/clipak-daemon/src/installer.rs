@@ -1,3 +1,9 @@
+//! Package installation and uninstallation engine.
+//!
+//! Manages unpacking package DDI images and manifests into standard storage
+//! directories, verifying cryptographic block integrity, registering host PATH
+//! shims, and writing user/system shell integration profiles.
+
 use anyhow::{bail, Context, Result};
 use clipak_core::constants::*;
 use clipak_core::manifest::ToolManifest;
@@ -7,6 +13,7 @@ use std::path::{Path, PathBuf};
 
 use crate::shim_manager::{ShimManager, ShimMode};
 
+/// Manages installation and removal of Clipak packages.
 pub struct PackageInstaller {
     is_system: bool,
     dispatcher: ClipakDispatcher,

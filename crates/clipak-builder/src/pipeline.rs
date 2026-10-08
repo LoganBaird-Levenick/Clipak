@@ -1,3 +1,8 @@
+//! End-to-end package build pipeline and validation driver.
+//!
+//! Coordinates manifest validation, step execution, dependency bundling,
+//! SBOM generation (SPDX and CycloneDX), CAS caching, and DDI packaging.
+
 use anyhow::{bail, Context, Result};
 use clipak_core::cas::CasStore;
 use clipak_core::crypto::SigningIdentity;
@@ -11,7 +16,7 @@ use std::process::Command;
 use crate::bundler::DependencyBundler;
 use crate::ddi_packager::DdiPackager;
 
-/// Result of building a Clipak tool package
+/// Artifact outputs from a successful package build.
 #[derive(Debug)]
 pub struct BuildResult {
     pub ddi_path: PathBuf,

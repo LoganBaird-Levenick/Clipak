@@ -1,3 +1,8 @@
+//! Remote repository management and package index handling.
+//!
+//! Handles fetching package indexes (`index.json`), searching remote packages,
+//! and downloading signed DDI disk images and manifests over HTTP/HTTPS or local paths.
+
 use anyhow::{bail, Context, Result};
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -7,7 +12,7 @@ use std::process::Command;
 pub const DEFAULT_OFFICIAL_REPO_NAME: &str = "clipak-official";
 pub const DEFAULT_OFFICIAL_REPO_URL: &str = "https://raw.githubusercontent.com/LoganBaird-Levenick/Clipak-Repository/main/repository";
 
-/// An entry in a Clipak software repository index
+/// An entry in a Clipak software repository index.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RepoPackageEntry {
     pub id: String,

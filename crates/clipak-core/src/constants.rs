@@ -1,7 +1,11 @@
+//! Well-known partition GUIDs, directory layouts, and runtime constants.
+//!
+//! Partition type GUIDs follow the systemd Discoverable Partitions Specification (DPS):
+//! <https://uapi-group.org/specifications/specs/discoverable_partitions_specification/>
+
 use uuid::Uuid;
 
-/// Linux UAPI Discoverable Partitions Specification GUIDs
-/// Root filesystem partitions
+/// Linux UAPI Discoverable Partitions Specification GUIDs for root partitions.
 pub const UAPI_ROOT_X86_64_STR: &str = "4f68bce3-e8cd-4db1-96e7-fbcaf984b709";
 pub const UAPI_ROOT_AARCH64_STR: &str = "b921b045-1df0-41c3-af44-4c6f280d3fae";
 

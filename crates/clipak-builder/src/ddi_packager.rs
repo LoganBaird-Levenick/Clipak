@@ -1,3 +1,10 @@
+//! Discoverable Disk Image (DDI) packaging and layout assembly.
+//!
+//! Converts a staged `/app` filesystem tree into a read-only filesystem
+//! (preferring Erofs for performance, falling back to Squashfs), calculates
+//! the dm-verity Merkle tree, signs the root hash with PKCS#7 if keys are provided,
+//! and writes the final GPT image.
+
 use anyhow::{bail, Context, Result};
 use clipak_core::constants::*;
 use clipak_core::crypto::{sign_root_hash, SigningIdentity};
@@ -14,7 +21,7 @@ pub enum ReadOnlyFs {
     Squashfs,
 }
 
-/// Packages an application tree into a compliant UAPI.3 Discoverable Disk Image
+/// Packages an application tree into a compliant UAPI.3 Discoverable Disk Image.
 pub struct DdiPackager;
 
 impl DdiPackager {

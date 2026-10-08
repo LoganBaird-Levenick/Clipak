@@ -1,3 +1,9 @@
+//! Extraction and mounting engine for UAPI Discoverable Disk Images.
+//!
+//! Locates the root partition within a GPT image, extracts or mounts its
+//! filesystem (Erofs or Squashfs), and caches the resulting rootfs tree under
+//! `~/.cache/clipak/mounts/<sha256>`.
+
 use anyhow::{bail, Context, Result};
 use clipak_core::gpt::read_ddi_image;
 use sha2::{Digest, Sha256};
@@ -6,7 +12,7 @@ use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-/// Represents an available mounted or extracted DDI filesystem payload
+/// Represents an available mounted or extracted DDI filesystem payload.
 #[derive(Debug, Clone)]
 pub struct MountedPayload {
     /// Directory containing the /app or /usr hierarchy

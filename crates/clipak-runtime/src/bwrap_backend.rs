@@ -1,3 +1,9 @@
+//! Unprivileged mount namespacing backend powered by Bubblewrap (`bwrap`).
+//!
+//! Configures Bubblewrap to mount `/app` (and `/usr`) while passing through
+//! the host filesystem, devices, `/proc`, `/sys`, and network/PID namespaces.
+//! This allows unprivileged users to execute tools that need host access.
+
 use anyhow::{Context, Result};
 use std::collections::HashMap;
 use std::path::Path;

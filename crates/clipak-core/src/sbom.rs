@@ -1,3 +1,8 @@
+//! Software Bill of Materials (SBOM) generation in SPDX 2.3 and CycloneDX 1.5 formats.
+//!
+//! Generates machine-readable dependency inventories for built Clipak packages,
+//! detailing bundled shared libraries, licenses, and component hashes.
+
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
 

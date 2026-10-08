@@ -1,3 +1,19 @@
+//! Core data types, disk structures, and verification primitives for Clipak.
+//!
+//! Clipak packages low-level developer tools (like debuggers, profilers, and
+//! system utilities) as systemd UAPI Discoverable Disk Images (DDIs) with
+//! cryptographic integrity guarantees.
+//!
+//! This crate contains the format definitions and low-level engines:
+//! - [`gpt`]: UAPI-compliant GPT disk image builder and parser.
+//! - [`verity`]: dm-verity Merkle tree generation and superblock calculation.
+//! - [`crypto`]: PKCS#7 digital signature generation and certificate validation.
+//! - [`cas`]: Content-Addressable Storage for reproducible builds and caching.
+//! - [`manifest`]: Tool package manifest definition (`clipak.yaml` / `manifest.json`).
+//! - [`policy`]: Flatpak exclusion curation rules and enforcement trust store.
+//! - [`repo`]: Remote repository indexes and package catalogs.
+//! - [`sbom`]: SPDX 2.3 and CycloneDX 1.5 supply chain metadata generation.
+
 pub mod cas;
 pub mod constants;
 pub mod crypto;

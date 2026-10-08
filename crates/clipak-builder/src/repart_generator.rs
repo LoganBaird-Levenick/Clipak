@@ -1,9 +1,14 @@
+//! Integration with `systemd-repart` for disk image partitioning.
+//!
+//! Generates partition drop-in definition files (`00-root.conf`, `10-verity.conf`,
+//! `20-verity-sig.conf`) and invokes `systemd-repart` when available on the host.
+
 use anyhow::Result;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
 
-/// Generates systemd-repart configuration files conforming to UAPI.3 DDI
+/// Generates systemd-repart configuration files conforming to UAPI.3 DDI.
 pub struct RepartGenerator;
 
 impl RepartGenerator {

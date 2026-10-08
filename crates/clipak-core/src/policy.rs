@@ -1,3 +1,9 @@
+//! Security policy validation, certificate trust stores, and Flatpak exclusion gatekeeping.
+//!
+//! Clipak enforces a strict curation rule: software that can run inside standard
+//! Flatpak sandboxes belongs in Flatpak. Clipak only accepts tools requiring
+//! unconfined host access (e.g. ptrace, raw kernel interfaces, eBPF, perf).
+
 use anyhow::{bail, Result};
 use openssl::x509::X509;
 use serde::{Deserialize, Serialize};
@@ -6,7 +12,7 @@ use std::path::{Path, PathBuf};
 
 use crate::manifest::ToolManifest;
 
-/// Security enforcement modes
+/// Security enforcement modes for verifying disk images at runtime.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum EnforcementMode {

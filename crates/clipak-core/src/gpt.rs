@@ -1,3 +1,11 @@
+//! GUID Partition Table (GPT) generation and parsing for Discoverable Disk Images.
+//!
+//! Formats disk images conforming to the UEFI GPT specification and systemd DDI standard:
+//! - Protective MBR at LBA 0
+//! - Primary GPT Header at LBA 1
+//! - Partition Entry Array at LBA 2..33 (128 entries × 128 bytes)
+//! - Partition data starting at aligned 4KB boundaries (LBA 2048)
+
 use anyhow::{bail, Result};
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom, Write};
@@ -12,7 +20,7 @@ pub const GPT_PARTITION_ENTRY_SIZE: u32 = 128;
 pub const GPT_NUM_ENTRIES: u32 = 128;
 pub const GPT_ENTRIES_SECTORS: u64 = (GPT_NUM_ENTRIES as u64 * GPT_PARTITION_ENTRY_SIZE as u64) / SECTOR_SIZE;
 
-/// Represents a GPT partition entry
+/// A single GPT partition entry describing its boundary LBAs and type GUID.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GptPartition {
     pub type_guid: Uuid,

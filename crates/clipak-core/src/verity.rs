@@ -1,3 +1,9 @@
+//! dm-verity Merkle tree computation and block verification.
+//!
+//! Builds the standard Linux kernel dm-verity hash tree (version 1) using
+//! salted SHA-256 digests over 4096-byte blocks, including the 512-byte
+//! superblock header stored in the verity partition.
+
 use anyhow::{bail, Result};
 use sha2::{Digest, Sha256};
 use uuid::Uuid;

@@ -1,3 +1,9 @@
+//! Package discovery, integrity verification, and runtime dispatch.
+//!
+//! Handles locating installed packages across user (`~/.local/share/clipak`)
+//! and system (`/var/lib/clipak`) directories, validating their signatures,
+//! configuring library search paths, and delegating execution to the backend.
+
 use anyhow::{bail, Result};
 use clipak_core::constants::*;
 use clipak_core::crypto::verify_root_hash_signature;
@@ -13,7 +19,7 @@ use crate::bwrap_backend::execute_with_bwrap;
 use crate::ddi_mounter::prepare_ddi_payload;
 use crate::mount_namespace::enter_native_mount_namespace;
 
-/// Describes an installed Clipak tool installation
+/// Metadata and local paths for an installed Clipak package.
 #[derive(Debug, Clone)]
 pub struct InstalledTool {
     pub id: String,
