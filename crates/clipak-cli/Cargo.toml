@@ -1,9 +1,12 @@
 [package]
 name = "clipak"
+description = "Command-line interface for the Clipak developer tool packaging and delivery system"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
 
 [[bin]]
 name = "clipak"
@@ -27,3 +30,6 @@ tempfile.workspace = true
 nix.workspace = true
 sha2.workspace = true
 hex.workspace = true
+comfy-table.workspace = true
+colored.workspace = true
+indicatif.workspace = true
