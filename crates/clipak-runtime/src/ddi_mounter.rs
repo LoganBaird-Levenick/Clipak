@@ -60,10 +60,21 @@ pub fn prepare_ddi_payload<P: AsRef<Path>>(
     let part_hash = format!("{:x}", Sha256::digest(&root_data));
     let target_extract_dir = cache_dir.join(&part_hash);
 
+    // If target directory exists but is empty or missing bin/, purge it to force re-extraction
+    if target_extract_dir.exists() {
+        let is_valid = target_extract_dir.join("bin").exists()
+            && fs::read_dir(target_extract_dir.join("bin"))
+                .map(|mut it| it.next().is_some())
+                .unwrap_or(false);
+        if !is_valid {
+            let _ = fs::remove_dir_all(&target_extract_dir);
+        }
+    }
+
     if !target_extract_dir.exists() {
         fs::create_dir_all(&target_extract_dir)?;
 
-        // Try extracting with 7z, unsquashfs, dump.erofs, or fsck.erofs
+        // Try extracting with unsquashfs, 7z, fsck.erofs, dump.erofs, or container fallbacks
         let temp_raw = cache_dir.join(format!("raw-{}.img", part_hash));
         {
             let mut f = File::create(&temp_raw)?;
@@ -73,7 +84,7 @@ pub fn prepare_ddi_payload<P: AsRef<Path>>(
 
         let mut extracted = false;
 
-        // Try unsquashfs
+        // 1. Try unsquashfs
         if Command::new("unsquashfs")
             .arg("-d")
             .arg(&target_extract_dir)
@@ -86,10 +97,74 @@ pub fn prepare_ddi_payload<P: AsRef<Path>>(
             extracted = true;
         }
 
-        // Try dump.erofs / fsck.erofs if not squashfs
+        // 2. Try 7z (extracts squashfs archives natively on host)
+        if !extracted {
+            if Command::new("7z")
+                .arg("x")
+                .arg("-y")
+                .arg(format!("-o{}", target_extract_dir.display()))
+                .arg(&temp_raw)
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+            {
+                extracted = true;
+            }
+        }
+
+        // 3. Try fsck.erofs
         if !extracted {
             if Command::new("fsck.erofs")
                 .arg(format!("--extract={}", target_extract_dir.display()))
+                .arg(&temp_raw)
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+            {
+                extracted = true;
+            }
+        }
+
+        // 4. Try dump.erofs
+        if !extracted {
+            if Command::new("dump.erofs")
+                .arg(format!("--extract={}", target_extract_dir.display()))
+                .arg(&temp_raw)
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+            {
+                extracted = true;
+            }
+        }
+
+        // 5. Try extraction inside toolbox container (for atomic/Silverblue host systems)
+        if !extracted {
+            if Command::new("toolbox")
+                .arg("run")
+                .arg("-c")
+                .arg("Clipak")
+                .arg("fsck.erofs")
+                .arg(format!("--extract={}", target_extract_dir.display()))
+                .arg(&temp_raw)
+                .output()
+                .map(|o| o.status.success())
+                .unwrap_or(false)
+            {
+                extracted = true;
+            }
+        }
+
+        // 6. Try unsquashfs inside toolbox container
+        if !extracted {
+            if Command::new("toolbox")
+                .arg("run")
+                .arg("-c")
+                .arg("Clipak")
+                .arg("unsquashfs")
+                .arg("-d")
+                .arg(&target_extract_dir)
+                .arg("-f")
                 .arg(&temp_raw)
                 .output()
                 .map(|o| o.status.success())
@@ -103,8 +178,24 @@ pub fn prepare_ddi_payload<P: AsRef<Path>>(
         let _ = fs::remove_file(temp_raw);
 
         if !extracted {
-            // If direct extraction tools failed, check if the raw bytes are a directory or tarball
-            // Or if running with privileges, target_extract_dir can be loop mounted
+            let _ = fs::remove_dir_all(&target_extract_dir);
+            bail!("Failed to extract rootfs payload from DDI: no extraction utility succeeded (install erofs-utils, squashfs-tools, or 7z)");
+        }
+
+        // Ensure binaries in /app/bin have executable permissions
+        let bin_dir = target_extract_dir.join("bin");
+        if let Ok(entries) = fs::read_dir(&bin_dir) {
+            for entry in entries.flatten() {
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
+                    if let Ok(meta) = entry.metadata() {
+                        let mut perms = meta.permissions();
+                        perms.set_mode(0o755);
+                        let _ = fs::set_permissions(entry.path(), perms);
+                    }
+                }
+            }
         }
     }
 
